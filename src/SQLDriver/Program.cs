@@ -40,7 +40,7 @@ namespace SQLDriver
             var ninetyNineNinePercentile = results[(int)(length / 1000.0 * 999)];
 
             var failureCount = failures.Count(isFailure => isFailure);
-            var failurePercentage = failureCount / length;
+            var failurePercentage = failureCount / (float)length;
 
             Console.WriteLine();
             Console.WriteLine($"Completed {results.Length} executions in {sw.ElapsedMilliseconds}ms");
