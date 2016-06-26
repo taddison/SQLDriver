@@ -27,6 +27,7 @@ namespace SQLDriver
 
             // Gather results & output
             var results = runner.GetTimingsArray();
+            var failures = runner.GetFailureArray();
             Array.Sort(results);
 
             // Unreliable with < 1000 results for 99.9 percentile
@@ -38,8 +39,12 @@ namespace SQLDriver
             var ninetyNinePercentile = results[(int)(length / 100.0 * 99)];
             var ninetyNineNinePercentile = results[(int)(length / 1000.0 * 999)];
 
+            var failureCount = failures.Count(isFailure => isFailure);
+            var failurePercentage = failureCount / length;
+
             Console.WriteLine();
             Console.WriteLine($"Completed {results.Length} executions in {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"{failureCount} errors ({failurePercentage:P0})");
             Console.WriteLine($"Min: {results[0]} | Avg: {results.Average():N0} | Max: {results[length-1]}");
             Console.WriteLine();
             Console.WriteLine("  50P  |  80P  |  90P  |  95P  |  99P  | 99.9P");

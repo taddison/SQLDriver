@@ -15,6 +15,8 @@ namespace SQLDriver
         // Threads x Number of Executions
         // For each thread, store the time taken to complete the workload
         private int[][] _threadTimings;
+        // Store any failures
+        private bool[][] _failures;
         private SqlConnection[] _connections;
         private SqlCommand[] _commands;
 
@@ -26,12 +28,14 @@ namespace SQLDriver
             _commandText = commandText;
 
             _threadTimings = new int[numberOfThreads][];
+            _failures = new bool[numberOfThreads][];
             _connections = new SqlConnection[numberOfThreads];
             _commands = new SqlCommand[numberOfThreads];
             
             for(var i = 0; i < _threadTimings.Length; i++)
             {
                 _threadTimings[i] = new int[numberOfRepetitionsPerThread];
+                _failures[i] = new bool[_numberOfRepetitionsPerThread];
                 _connections[i] = new SqlConnection(_connectionString);
                 _connections[i].Open();
                 _commands[i] = new SqlCommand(_commandText, _connections[i]);
@@ -48,6 +52,18 @@ namespace SQLDriver
             }
 
             return timingsArray;
+        }
+
+        internal bool[] GetFailureArray()
+        {
+            var failureArray = new bool[_numberOfRepetitionsPerThread * _numberOfThreads];
+            
+            for (var threadId = 0; threadId < _numberOfThreads; threadId++)
+            {
+                _failures[threadId].CopyTo(failureArray, threadId * _numberOfRepetitionsPerThread);
+            }
+
+            return failureArray;
         }
 
         internal void Run()
@@ -67,10 +83,10 @@ namespace SQLDriver
             for(var i = 0; i < _numberOfRepetitionsPerThread; i++)
             {
                 sw.Restart();
-                // TODO: What to do with success?
                 var success = RunRepetition(command);
                 sw.Stop();
                 _threadTimings[threadId][i] = (int)sw.ElapsedMilliseconds;
+                _failures[threadId][i] = !success;
             }
 
         }
