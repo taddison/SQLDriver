@@ -13,7 +13,8 @@ Both of these commands will:
 - To execute the specified command (select @@servername) 5 times (50 times in total)
 - On the server localhost
 - Ouput percentile timings for the run, as well as the number of errors
-The second command also
+
+The second command also:
 - Outputs the timings (ms per execution) to the file c:\results.csv
 
 Run the program without any parameters for a list of all options.
