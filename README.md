@@ -2,13 +2,17 @@
 Benchmark and load test MS SQL Server.
 
 ## Example Usage
-```SQLDriver -r 5 -t 10 -c "server=localhost;initial catalog=master;integrated security=SSPI" -s "select @@servername" -o "c:\results.csv"```
+```SQLDriver -r 5 -t 10 - c"server=localhost;initial catalog=master;integrated security=SSPI" -s "select @@servername"
 
-This will:
+SQLDriver -r 5 -t 10 -c "server=localhost;initial catalog=master;integrated security=SSPI" -s "select @@servername" -o "c:\results.csv"```
+
+Both of these commands will:
 - Use 10 threads
 - To execute the specified command (select @@servername) 5 times (50 times in total)
 - On the server localhost
-- And output the timings (ms per execution) to the file c:\results.csv
+- Ouput percentile timings for the run, as well as the number of errors
+The second command also
+- Outputs the timings (ms per execution) to the file c:\results.csv
 
 Run the program without any parameters for a list of all options.
 
