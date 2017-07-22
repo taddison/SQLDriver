@@ -7,23 +7,25 @@ namespace SQLDriver
 {
     class Program
     {
+        static Options _options;
+
         static void Main(string[] args)
         {
-            var options = new Options();
-            Parser.Default.ParseArgumentsStrict(args, options, () => Environment.Exit(-2));
-            
+            _options = new Options();
+            Parser.Default.ParseArgumentsStrict(args, _options, () => Environment.Exit(-2));
+
             // Run benchmark
-            Console.Write("Initialising test runner and opening connections...");
-            var runner = new SQLRunner(options.NumberOfThreads, options.NumberOfRepetitionsPerThread, options.TargetServerConnectionString, options.CommandText);
-            Console.WriteLine("Done");
-            Console.Write($"Running load test with {options.NumberOfThreads} threads and {options.NumberOfRepetitionsPerThread} repetitions per thread...");
+            WriteOutput("Initialising test runner and opening connections...");
+            var runner = new SQLRunner(_options.NumberOfThreads, _options.NumberOfRepetitionsPerThread, _options.TargetServerConnectionString, _options.CommandText);
+            WriteOutput("Done");
+            WriteOutput($"Running load test with {_options.NumberOfThreads} threads and {_options.NumberOfRepetitionsPerThread} repetitions per thread...");
 
             var sw = new Stopwatch();
             sw.Start();
             runner.Run();
             sw.Stop();
 
-            Console.WriteLine("Done");
+            WriteOutput("Done");
 
             // Gather results & output
             var results = runner.GetTimingsArray();
@@ -42,36 +44,60 @@ namespace SQLDriver
             var failureCount = failures.Count(isFailure => isFailure);
             var failurePercentage = failureCount / (float)length;
 
-            Console.WriteLine();
-            Console.WriteLine($"Completed {results.Length} executions in {sw.ElapsedMilliseconds}ms");
-            Console.WriteLine($"{failureCount} errors ({failurePercentage:P0})");
-            Console.WriteLine($"Min: {results[0]} | Avg: {results.Average():N0} | Max: {results[length-1]}");
-            Console.WriteLine();
-            Console.WriteLine("  50P  |  80P  |  90P  |  95P  |  99P  | 99.9P");
-            Console.WriteLine($"{median,7}|{eightyPercentile,7}|{ninetyPercentile,7}|{ninetyFivePercentile,7}|{ninetyNinePercentile,7}|{ninetyNineNinePercentile,7}");
-            Console.WriteLine();
+            WriteOutput();
+            WriteOutput($"Completed {results.Length} executions in {sw.ElapsedMilliseconds}ms");
+            WriteOutput($"{failureCount} errors ({failurePercentage:P0})");
+            WriteOutput($"Min: {results[0]} | Avg: {results.Average():N0} | Max: {results[length-1]}");
+            WriteOutput();
+            WriteOutput("  50P  |  80P  |  90P  |  95P  |  99P  | 99.9P");
+            WriteOutput($"{median,7}|{eightyPercentile,7}|{ninetyPercentile,7}|{ninetyFivePercentile,7}|{ninetyNinePercentile,7}|{ninetyNineNinePercentile,7}");
+            WriteOutput();
 
-            if(!String.IsNullOrEmpty(options.OutputFilePath))
+            if(_options.MinimalOutput)
+            {
+                WriteMinimalOutput(sw.ElapsedMilliseconds, results.Length, failureCount, median, ninetyPercentile, ninetyFivePercentile, ninetyNinePercentile, ninetyNineNinePercentile, results[length-1]);
+            }
+
+            if(!String.IsNullOrEmpty(_options.OutputFilePath))
             {
                 var resultsAsString = results.Select(i => i.ToString()).ToArray();
 
                 try
                 {
-                    System.IO.File.WriteAllLines(options.OutputFilePath, resultsAsString);
-                    Console.WriteLine($"Wrote all results to {options.OutputFilePath}");
+                    System.IO.File.WriteAllLines(_options.OutputFilePath, resultsAsString);
+                    WriteOutput($"Wrote all results to {_options.OutputFilePath}");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Exception writing output.");
-                    Console.WriteLine(e.Message);
+                    WriteOutput("Exception writing output.");
+                    WriteOutput(e.Message);
                 }
             }
 
-            if(options.Wait)
+            if(_options.Wait)
             {
-                Console.WriteLine("Press any key to exit");
+                WriteOutput("Press any key to exit");
                 Console.ReadKey();
             }
+        }
+
+        private static void WriteMinimalOutput(long duration, int completed, int failed, int median, int p90, int p95, int p99, int p999, int max)
+        {
+            Console.Write($"{_options.NumberOfThreads},{_options.NumberOfRepetitionsPerThread},\"{_options.CommandText}\",{duration},{completed},{failed},{p90},{p95},{p99},{p999},{max}");
+        }
+
+        private static void WriteOutput()
+        {
+            WriteOutput(string.Empty);
+        }
+
+        private static void WriteOutput(string output)
+        {
+            if(_options.MinimalOutput)
+            {
+                return;
+            }
+            Console.WriteLine(output);
         }
     }
 }

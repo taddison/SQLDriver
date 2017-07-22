@@ -7,6 +7,9 @@ namespace SQLDriver
         [Option('o', "OutputFilePath", Required = false, HelpText = "Output file path to write all results")]
         public string OutputFilePath { get; set; }
 
+        [Option('m', "MinimalOutput", Required = false, HelpText = "Output a single line of condensed results only")]
+        public bool MinimalOutput { get; set; }
+
         [Option('r', "RepetitionsPerThread", Required = true, HelpText = "Number of times to execute the command per thread")]
         public int NumberOfRepetitionsPerThread { get; set; }
 
