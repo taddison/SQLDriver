@@ -45,7 +45,7 @@ namespace SQLDriver
             var failurePercentage = failureCount / (float)length;
 
             WriteOutput();
-            WriteOutput($"Completed {results.Length} executions in {sw.ElapsedMilliseconds}ms");
+            WriteOutput($"Completed {results.Length} executions in {sw.ElapsedMilliseconds}ms for benchmark ref {_options.Id}");
             WriteOutput($"{failureCount} errors ({failurePercentage:P0})");
             WriteOutput($"Min: {results[0]} | Avg: {results.Average():N0} | Max: {results[length-1]}");
             WriteOutput();
@@ -83,7 +83,7 @@ namespace SQLDriver
 
         private static void WriteMinimalOutput(long duration, int completed, int failed, int median, int p90, int p95, int p99, int p999, int max)
         {
-            Console.Write($"{_options.NumberOfThreads},{_options.NumberOfRepetitionsPerThread},\"{_options.CommandText}\",{duration},{completed},{failed},{median},{p90},{p95},{p99},{p999},{max}");
+            Console.Write($"{_options.Id},{_options.NumberOfThreads},{_options.NumberOfRepetitionsPerThread},\"{_options.CommandText}\",{duration},{completed},{failed},{median},{p90},{p95},{p99},{p999},{max}");
         }
 
         private static void WriteOutput()

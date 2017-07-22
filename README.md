@@ -23,7 +23,7 @@ The program will also print summary statistics once execution is complete:
 ![sample output](/SampleOutput.png)
 
 ## Building the project
-Clone the repository and execute a build.  Tested in Visual Studio 2015 on Windows 10.
+Clone the repository and execute a build.  Tested in Visual Studio 2017 on Windows 10.
 
 Optionally run an ILMerge on the final output:
 ```ILMerge SQLDriver.exe CommandLine.dll /out:SQLDriverMerged.exe```
@@ -31,5 +31,18 @@ Optionally run an ILMerge on the final output:
 ## Motivation
 Although there are plenty of other tools out there (OStress, HammerDB, SQLQueryStress - to name just a few) none of them were an exact fit for what I'm trying to do in a [benchmarking project](https://github.com/taddison/sql-tables-as-queue-benchmarks), so I built this tool and I'm open sourcing it in the hope someone else will benefit from it.
 
+## Benchmarking
+Using the MinimalOutput argument (-m) SQLDriver can be used to produce summary data.  The following script runs the benchmark 10 times and outputs the results to a csv.
+
+```powershell
+"id,threads,repeats,command,duration,completed,failed,median,p90,p95,p99,p999,max" | Out-File results.csv
+
+for($threads = 1; $threads -le 8; $threads++) {
+    .\SQLDriver.exe -r 5 -t $threads -c "server=localhost;initial catalog=master;integrated security=sspi" -s "select @@servername" -m -i "sample" *>> results.csv
+}
+```
+
+The CSV can then be analysed in Power BI, Excel, etc.
+
 ## Contributing
-Contributions welcome, though please file an issue first rather than dropping a stealth PR directly.
+Contributions welcome, please raise an issue before submitting a PR.
