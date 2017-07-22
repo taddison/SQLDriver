@@ -35,7 +35,7 @@ Although there are plenty of other tools out there (OStress, HammerDB, SQLQueryS
 Using the MinimalOutput argument (-m) SQLDriver can be used to produce summary data.  The following script runs the benchmark 10 times and outputs the results to a csv.
 
 ```powershell
-"id,threads,repeats,command,duration,completed,failed,median,p90,p95,p99,p999,max" | Out-File results.csv
+"id,threads,repeats,duration,completed,failed,median,p90,p95,p99,p999,max" | Out-File results.csv
 
 for($threads = 1; $threads -le 8; $threads++) {
     .\SQLDriver.exe -r 5 -t $threads -c "server=localhost;initial catalog=master;integrated security=sspi" -s "select @@servername" -m -i "sample" *>> results.csv
