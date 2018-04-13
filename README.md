@@ -3,7 +3,7 @@ Benchmark and load test MS SQL Server.
 
 ## Example Usage
 ```
-SQLDriver -r 5 -t 10 - c"server=localhost;initial catalog=master;integrated security=SSPI" -s "select @@servername"
+SQLDriver -r 5 -t 10 -c "server=localhost;initial catalog=master;integrated security=SSPI" -s "select @@servername"
 
 SQLDriver -r 5 -t 10 -c "server=localhost;initial catalog=master;integrated security=SSPI" -s "select @@servername" -o "c:\results.csv"
 ```
