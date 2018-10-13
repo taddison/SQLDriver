@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using CommandLine;
 
 namespace SQLDriver
@@ -9,7 +10,7 @@ namespace SQLDriver
     {
         static Options _options;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             _options = new Options();
             Parser.Default.ParseArguments<Options>(args)
@@ -24,7 +25,7 @@ namespace SQLDriver
 
             var sw = new Stopwatch();
             sw.Start();
-            runner.Run();
+            await runner.Run();
             sw.Stop();
 
             WriteOutput("Done");

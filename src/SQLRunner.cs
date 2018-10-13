@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SQLDriver
@@ -66,16 +67,16 @@ namespace SQLDriver
             return failureArray;
         }
 
-        internal void Run()
+        internal async Task Run()
         {
-            // Execute workload on required number of threads, and capture details
-            Parallel.For(0, _numberOfThreads, threadId =>
-            {
-                RunThread(threadId);
-            });
+            var threads = Enumerable.Range(0,_numberOfThreads)
+                    .Select(i => RunThread(i))
+                    .ToArray();
+            
+            await Task.WhenAll(threads);
         }
 
-        private void RunThread(int threadId)
+        private async Task RunThread(int threadId)
         {
             var sw = new Stopwatch();
             var command = _commands[threadId];
@@ -83,7 +84,7 @@ namespace SQLDriver
             for(var i = 0; i < _numberOfRepetitionsPerThread; i++)
             {
                 sw.Restart();
-                var success = RunRepetition(command);
+                var success = await RunRepetition(command);
                 sw.Stop();
                 _threadTimings[threadId][i] = (int)sw.ElapsedMilliseconds;
                 _failures[threadId][i] = !success;
@@ -91,12 +92,12 @@ namespace SQLDriver
 
         }
 
-        private bool RunRepetition(SqlCommand command)
+        private async Task<bool> RunRepetition(SqlCommand command)
         {
             var random = new Random();
             try
             {
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
                 return true;
             }
             catch
