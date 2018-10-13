@@ -23,10 +23,15 @@ The program will also print summary statistics once execution is complete:
 ![sample output](/SampleOutput.png)
 
 ## Building the project
-Clone the repository and execute a build.  Tested in Visual Studio 2017 on Windows 10.
+Clone the repository and run the following from the src folder:
+```cmd
+dotnet build
+```
 
-Optionally run an ILMerge on the final output:
-```ILMerge SQLDriver.exe CommandLine.dll /out:SQLDriverMerged.exe```
+To build an executable, publish with the appropriate config for your platform:
+```cmd
+dotnet publish -c Release -r win10-x64
+```
 
 ## Motivation
 Although there are plenty of other tools out there (OStress, HammerDB, SQLQueryStress - to name just a few) none of them were an exact fit for what I'm trying to do in a [benchmarking project](https://github.com/taddison/sql-tables-as-queue-benchmarks), so I built this tool and I'm open sourcing it in the hope someone else will benefit from it.

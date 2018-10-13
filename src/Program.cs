@@ -12,7 +12,9 @@ namespace SQLDriver
         static void Main(string[] args)
         {
             _options = new Options();
-            Parser.Default.ParseArgumentsStrict(args, _options, () => Environment.Exit(-2));
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed<Options>(opts => _options = opts)
+                .WithNotParsed<Options>(errs => Environment.Exit(-2));
 
             // Run benchmark
             WriteOutput("Initialising test runner and opening connections...");

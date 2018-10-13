@@ -22,10 +22,10 @@ namespace SQLDriver
         [Option('s', "SQL", Required = true, HelpText = "The SQL to execute on the target server")]
         public string CommandText { get; set; }
         
-        [Option('w', "Wait", Required = false, DefaultValue = false, HelpText = "Whether the process should wait for user input before terminating after a benchmark run")]
+        [Option('w', "Wait", Required = false, Default = false, HelpText = "Whether the process should wait for user input before terminating after a benchmark run")]
         public bool Wait { get; set; }
 
-        [Option('i', "Id", Required = false, DefaultValue = "", HelpText = "Benchmark Id, output as part of the results")]
+        [Option('i', "Id", Required = false, Default = "", HelpText = "Benchmark Id, output as part of the results")]
         public string Id { get; set; }
     }
 }
