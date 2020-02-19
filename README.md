@@ -2,10 +2,15 @@
 Benchmark and load test MS SQL Server.
 
 ## Example Usage
-```
+```bash
 SQLDriver -r 5 -t 10 -c "server=localhost;initial catalog=master;integrated security=SSPI" -s "select @@servername"
 
 SQLDriver -r 5 -t 10 -c "server=localhost;initial catalog=master;integrated security=SSPI" -s "select @@servername" -o "c:\results.csv"
+
+# Or if you run from source
+# Note the double-hyphens
+cd ./src
+dotnet run --r 5 --t 10 --c "server=localhost;initial catalog=master;integrated security=SSPI" --s "select @@servername"
 ```
 
 Both of these commands will:
