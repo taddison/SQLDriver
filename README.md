@@ -38,6 +38,11 @@ To build an executable, publish with the appropriate config for your platform:
 dotnet publish -c Release -r win10-x64
 ```
 
+To build a fully self-contained executable (including the native runtime binaries):
+```cmd
+dotnet publish -r win-x64 -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --self-contained true
+```
+
 ## Motivation
 Although there are plenty of other tools out there (OStress, HammerDB, SQLQueryStress - to name just a few) none of them were an exact fit for what I'm trying to do in a [benchmarking project](https://github.com/taddison/sql-tables-as-queue-benchmarks), so I built this tool and I'm open sourcing it in the hope someone else will benefit from it.
 
