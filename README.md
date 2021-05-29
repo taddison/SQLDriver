@@ -40,7 +40,7 @@ dotnet publish -c Release -r win10-x64
 
 To build a fully self-contained executable (including the native runtime binaries):
 ```cmd
-dotnet publish -r win-x64 -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --self-contained true
+dotnet publish -r win-x64 -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishTrimmed=True -p:TrimMode=Link --self-contained true
 ```
 
 ## Motivation
